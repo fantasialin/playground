@@ -46,11 +46,12 @@ class draw_fib:
         self.image = pygame.Surface((draw_width, draw_height))
         self.factor = 10
         self.fib = None
-        self.spiral_x = 200
-        self.spiral_y = int((draw_height/2)+100)
+        self.spiral_x = int(draw_width/2)
+        self.spiral_y = int(draw_height/2)
         self.dot_radius = 3
-        self.max_fib = 13
+        self.max_fib = 15
         self.count = 0
+        self.drawonce = 0
 
         # generate the first n fibonacci numbers
         if None == self.fib:
@@ -75,30 +76,37 @@ class draw_fib:
         start_y = self.spiral_y
 
         # 0 to n+1 because end index is exclusive
-        for i in range(0, nums+1): 
+        for i in range(1, nums+1, 1): 
             #print(self.fib[i])
-            pygame.draw.circle(self.image, (137,207,240), [start_x, start_y], 2, 0)
+            ##pygame.draw.circle(self.image, (137,207,240), [start_x, start_y], 2, 0)
                             
             #bottom right start
+            tmp_color = orange
             if (i%4 == 1):
                 curr_x = start_x - self.fib[i]
                 curr_y = start_y - self.fib[i]
+                tmp_color = light_gray
 
             #top right start
             elif (i%4 == 2):
                 curr_x = start_x - self.fib[i]
                 curr_y = start_y
+                tmp_color = light_blue
 
             #top left start
             elif (i%4 == 3):
                 curr_x = start_x
                 curr_y = start_y
+                tmp_color = dark_gray
 
             # bottom left start
             else:
                 curr_x = start_x
                 curr_y = start_y - self.fib[i]
-            rect = pygame.draw.rect(self.image, BLUE, [curr_x, curr_y, self.fib[i], self.fib[i]], 1)
+
+            tmp_rect = pygame.Rect(curr_x, curr_y, self.fib[i], self.fib[i])
+            rect = pygame.draw.rect(self.image, tmp_color, tmp_rect)
+            #rect = pygame.draw.rect(self.image, DARKGRAY, tmp_rect, 1)
 
             # center of the quadrant
             arc_x = 0
@@ -108,8 +116,7 @@ class draw_fib:
             if (i%4 == 1):
                 arc_x = start_x - 2 * self.fib[i]
                 arc_y = start_y - self.fib[i]
-                #rect = pygame.draw.rect(screen, BLACK, [arc_x, arc_y, 2 * self.fib[i], 2 * self.fib[i]], 2)
-                pygame.draw.arc(self.image, RED, [arc_x, arc_y, 2 * self.fib[i], 2 * self.fib[i]], 0, math.pi/2, 2)
+                pygame.draw.arc(self.image, RED, [arc_x, arc_y, 2 * self.fib[i], 2 * self.fib[i]], 0, math.pi/2, 1)
 
             
                 start_x = start_x - self.fib[i]
@@ -119,7 +126,7 @@ class draw_fib:
             elif (i%4 == 2):
                 arc_x = start_x - self.fib[i]
                 arc_y = start_y
-                pygame.draw.arc(self.image, RED, [arc_x, arc_y, 2 * self.fib[i], 2 * self.fib[i]], math.pi/2, math.pi, 2)
+                pygame.draw.arc(self.image, RED, [arc_x, arc_y, 2 * self.fib[i], 2 * self.fib[i]], math.pi/2, math.pi, 1)
 
                 start_x = start_x - self.fib[i]
                 start_y = start_y + self.fib[i]
@@ -128,7 +135,7 @@ class draw_fib:
             elif (i%4 == 3):
                 arc_x = start_x
                 arc_y = start_y - self.fib[i]
-                pygame.draw.arc(self.image, RED, [arc_x, arc_y, 2 * self.fib[i], 2 * self.fib[i]], math.pi, math.pi*3/2, 2)
+                pygame.draw.arc(self.image, RED, [arc_x, arc_y, 2 * self.fib[i], 2 * self.fib[i]], math.pi, math.pi*3/2, 1)
 
                 start_x = start_x + self.fib[i]
                 start_y = start_y + self.fib[i]
@@ -137,23 +144,28 @@ class draw_fib:
             else:
                 arc_x = start_x - self.fib[i]
                 arc_y = start_y - 2 * self.fib[i]
-                pygame.draw.arc(self.image, RED, [arc_x, arc_y, 2 * self.fib[i], 2 * self.fib[i]], math.pi*3/2, math.pi*2, 2)
+                pygame.draw.arc(self.image, RED, [arc_x, arc_y, 2 * self.fib[i], 2 * self.fib[i]], math.pi*3/2, math.pi*2, 1)
 
                 start_x = start_x + self.fib[i]
                 start_y = start_y - self.fib[i] 
 
-            pygame.draw.circle(self.image, (137,207,240), [start_x, start_y], 5, 0)
+            ##pygame.draw.circle(self.image, (137,207,240), [start_x, start_y], 2, 0)
     
     def draw(self):
         # draw self
-        self.image.fill((240,240,240))
+        if self.drawonce == 0:
+            self.image.fill((240,240,240))
 
         if self.count < self.max_fib:
             self.count += 1
         else:
             self.count = 0
 
-        self.plot_spiral(self.count)
+        #self.plot_spiral(self.count)
+
+        if self.drawonce == 0:
+            self.plot_spiral(self.max_fib)
+            self.drawonce = 1
 
         # bitblt
         self.surface.blit(self.image, self.draw_area)
