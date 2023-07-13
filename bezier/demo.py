@@ -43,33 +43,35 @@ class draw_bezier:
         self.win_area = pygame.Rect(0, 0, draw_width, draw_height)
         self.draw_area = pygame.Rect(self.x_offset, self.y_offset, draw_width+self.x_offset, draw_height+self.y_offset)
         self.image = pygame.Surface((draw_width, draw_height))
-        self.quadratic_CPs = []
-        self.quadratic_CPs.append((10,250))
-        self.quadratic_CPs.append((200,50))
-        self.quadratic_CPs.append((450,350))
 
-        self.curve_1 = self.gen_quadratic(self.quadratic_CPs)
+        self.curves = []
 
-        self.test_CPs = []
-        self.test_CPs.append((100,50))
-        self.test_CPs.append((150,50))
-        self.test_CPs.append((150,100))
+        quadratic_CPs = []
+        quadratic_CPs.append((10,250))
+        quadratic_CPs.append((200,50))
+        quadratic_CPs.append((450,350))
 
-        self.curve_2 = self.gen_quadratic(self.test_CPs)
+        self.curves.append((self.gen_quadratic(quadratic_CPs, 0.01), quadratic_CPs, RED))
 
-        self.cubic_CPs = []
-        self.cubic_CPs.append((10,300))
-        self.cubic_CPs.append((50,150))
-        self.cubic_CPs.append((300,150))
-        self.cubic_CPs.append((450,400))
+        test_CPs = []
+        test_CPs.append((100,50))
+        test_CPs.append((150,50))
+        test_CPs.append((150,100))
+        self.curves.append((self.gen_quadratic(test_CPs, 0.02), test_CPs, GREEN))
 
-        self.curve_3 = self.gen_cubic(self.cubic_CPs)
+        cubic_CPs = []
+        cubic_CPs.append((10,300))
+        cubic_CPs.append((50,150))
+        cubic_CPs.append((300,150))
+        cubic_CPs.append((450,400))
+
+        self.curves.append((self.gen_cubic(cubic_CPs, 0.01), cubic_CPs, BLUE))
 
     # destructor
     def __del__(self):
         pass
 
-    def gen_quadratic(self, points):
+    def gen_quadratic(self, points, step=0.01):
         if len(points) < 3:
             return []
         # define Second-order bezier curve control point
@@ -80,13 +82,13 @@ class draw_bezier:
         result = []
 
         # draw Second-order (quadratic) bezier curve
-        for t in np.arange(0, 1, 0.01):
+        for t in np.arange(0, 1, step):
             b = (1 - t) ** 2 * p0 + 2 * (1 - t) * t * p1 + t ** 2 * p2
             result.append(b)
 
         return result
 
-    def gen_cubic(self, points):
+    def gen_cubic(self, points, step=0.01):
         if len(points) < 4:
             return []
         # define cubic bezier curve control point
@@ -98,7 +100,7 @@ class draw_bezier:
         result = []
 
         # draw cubic bezier curve
-        for t in np.arange(0, 1, 0.01):
+        for t in np.arange(0, 1, step):
             b = (1 - t) ** 3 * q0 + 3 * (1 - t) ** 2 * t * q1 + 3 * (1 - t) * t ** 2 * q2 + t ** 3 * q3
             result.append(b)
 
@@ -107,29 +109,15 @@ class draw_bezier:
 
     def plot_bezier(self):
 
-        for b in self.curve_1:
-            pygame.draw.circle(self.image, (255, 0, 0), b.astype(int), 1)
-        
-        # draw control points
-        pygame.draw.aalines(self.image, BLUE, False, self.quadratic_CPs, 1)
-        for a in self.quadratic_CPs:
-            pygame.draw.circle(self.image, (0, 0, 0), a, 3)
+        for a in self.curves:
+            # draw curve
+            for b in a[0]:
+                pygame.draw.circle(self.image, a[2], b.astype(int), 1)
 
-        for b in self.curve_2:
-            pygame.draw.circle(self.image, (0, 255, 0), b.astype(int), 1)
-        
-        # draw control points
-        pygame.draw.aalines(self.image, orange, False, self.test_CPs, 1)
-        for a in self.test_CPs:
-            pygame.draw.circle(self.image, (0, 0, 0), a, 3)
-
-        for b in self.curve_3:
-            pygame.draw.circle(self.image, (0, 0, 255), b.astype(int), 1)
-
-        # draw control points
-        pygame.draw.aalines(self.image, GREEN, False, self.cubic_CPs, 1)
-        for a in self.cubic_CPs:
-            pygame.draw.circle(self.image, (0, 0, 0), a, 3)
+            # draw control points
+            pygame.draw.aalines(self.image, BLACK, False, a[1], 1)     
+            for p in a[1]:
+                pygame.draw.circle(self.image, orange, p, 3)
 
     
     def draw(self):
