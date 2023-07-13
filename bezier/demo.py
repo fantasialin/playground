@@ -48,10 +48,14 @@ class draw_bezier:
         self.quadratic_CPs.append((200,50))
         self.quadratic_CPs.append((450,350))
 
+        self.curve_1 = self.gen_quadratic(self.quadratic_CPs)
+
         self.test_CPs = []
         self.test_CPs.append((100,50))
         self.test_CPs.append((150,50))
         self.test_CPs.append((150,100))
+
+        self.curve_2 = self.gen_quadratic(self.test_CPs)
 
         self.cubic_CPs = []
         self.cubic_CPs.append((10,300))
@@ -59,26 +63,51 @@ class draw_bezier:
         self.cubic_CPs.append((300,150))
         self.cubic_CPs.append((450,400))
 
+        self.curve_3 = self.gen_cubic(self.cubic_CPs)
+
     # destructor
     def __del__(self):
         pass
 
-    def plot_bezier(self):
+    def gen_quadratic(self, points):
+        if len(points) < 3:
+            return []
         # define Second-order bezier curve control point
-        p0 = np.array(self.quadratic_CPs[0])
-        p1 = np.array(self.quadratic_CPs[1])
-        p2 = np.array(self.quadratic_CPs[2])
-        
+        p0 = np.array(points[0])
+        p1 = np.array(points[1])
+        p2 = np.array(points[2])
 
-        # define cubic bezier curve control point
-        q0 = np.array(self.cubic_CPs[0])
-        q1 = np.array(self.cubic_CPs[1])
-        q2 = np.array(self.cubic_CPs[2])
-        q3 = np.array(self.cubic_CPs[3])
+        result = []
 
-        # draw Second-order (quagratic) bezier curve
+        # draw Second-order (quadratic) bezier curve
         for t in np.arange(0, 1, 0.01):
             b = (1 - t) ** 2 * p0 + 2 * (1 - t) * t * p1 + t ** 2 * p2
+            result.append(b)
+
+        return result
+
+    def gen_cubic(self, points):
+        if len(points) < 4:
+            return []
+        # define cubic bezier curve control point
+        q0 = np.array(points[0])
+        q1 = np.array(points[1])
+        q2 = np.array(points[2])
+        q3 = np.array(points[3])
+
+        result = []
+
+        # draw cubic bezier curve
+        for t in np.arange(0, 1, 0.01):
+            b = (1 - t) ** 3 * q0 + 3 * (1 - t) ** 2 * t * q1 + 3 * (1 - t) * t ** 2 * q2 + t ** 3 * q3
+            result.append(b)
+
+        return result
+
+
+    def plot_bezier(self):
+
+        for b in self.curve_1:
             pygame.draw.circle(self.image, (255, 0, 0), b.astype(int), 1)
         
         # draw control points
@@ -86,12 +115,7 @@ class draw_bezier:
         for a in self.quadratic_CPs:
             pygame.draw.circle(self.image, (0, 0, 0), a, 3)
 
-        # draw Second-order (quagratic) bezier curve
-        t0 = np.array(self.test_CPs[0])
-        t1 = np.array(self.test_CPs[1])
-        t2 = np.array(self.test_CPs[2])
-        for t in np.arange(0, 1, 0.01):
-            b = (1 - t) ** 2 * t0 + 2 * (1 - t) * t * t1 + t ** 2 * t2
+        for b in self.curve_2:
             pygame.draw.circle(self.image, (0, 255, 0), b.astype(int), 1)
         
         # draw control points
@@ -99,9 +123,7 @@ class draw_bezier:
         for a in self.test_CPs:
             pygame.draw.circle(self.image, (0, 0, 0), a, 3)
 
-        # draw cubic bezier curve
-        for t in np.arange(0, 1, 0.01):
-            b = (1 - t) ** 3 * q0 + 3 * (1 - t) ** 2 * t * q1 + 3 * (1 - t) * t ** 2 * q2 + t ** 3 * q3
+        for b in self.curve_3:
             pygame.draw.circle(self.image, (0, 0, 255), b.astype(int), 1)
 
         # draw control points
