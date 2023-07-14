@@ -165,7 +165,7 @@ def main():
 
     offset = (screen_width - 500)/2
 
-    afib = draw_bezier(surface, screen_width, screen_height, 500, 500,
+    abezier = draw_bezier(surface, screen_width, screen_height, 500, 500,
                                 x_offset=offset, y_offset=20, init_random_count=10, draw_single_color=True)
 
     # loop
@@ -175,11 +175,11 @@ def main():
                 pygame.quit()
                 sys.exit()
             elif event.type == MOUSEBUTTONDOWN:
-                afib.handleEvent(event)
+                abezier.handleEvent(event)
             elif event.type == MOUSEMOTION:
-                afib.handleEvent(event)
+                abezier.handleEvent(event)
 
-        afib.draw()
+        abezier.draw()
 
         pygame.display.update()
         fpsClock.tick(FPS)
