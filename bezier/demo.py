@@ -76,6 +76,7 @@ class draw_bezier:
     def __del__(self):
         pass
 
+    # ref. https://en.wikipedia.org/wiki/B%C3%A9zier_curve
     def gen_linear(self, points, step=0.01):
         if len(points) < 2:
             return []
