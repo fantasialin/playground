@@ -1,18 +1,14 @@
 
-# iterative version of fibonacci
+# recursive with memory version of fibonacci
 import time
 
 def fib(nums: int):
-    # Fib(0) = 0, Fib(1) = 1, nums should positive integer or equal to 0
-    if nums <= 1: return nums
-    nums_prev = [0, 1]
-    result = 1
-    for _ in range (nums-1):
-        result = nums_prev[0] + nums_prev[1]
-        nums_prev[0] = nums_prev[1]
-        nums_prev[1] = result
-    return result
-
+    record = {0:0, 1:1}
+    def lookup(nums):
+        if nums not in record:
+            record[nums] = lookup(nums-1) + lookup(nums-2)
+        return record[nums]
+    return lookup(nums)
 
 # local test code
 
