@@ -185,8 +185,11 @@ class draw_bezier:
 
         for a in self.curves:
             # draw curve
-            for b in a[0]:
-                pygame.draw.circle(self.image, a[2], b.astype(int), 1)
+            if False: # use dot to plot curve
+                for b in a[0]:
+                    pygame.draw.circle(self.image, a[2], b.astype(int), 1)
+            else:
+                pygame.draw.aalines(self.image, a[2], False, a[0], 1)
 
             if None != a[1]:
                 # draw control points
