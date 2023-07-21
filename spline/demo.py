@@ -117,18 +117,18 @@ class draw_spline:
         self.nodes["point"] = CPs
         self.nodes["rect"] = rect_CPs
 
-        self.curves.append((self.gen_spline(CPs, 0.01), CPs, RED))
+        self.curves.append((self.gen_spline(CPs, 100), CPs, RED))
 
     def update_CPs(self, CPs):
         self.curves = []
-        self.curves.append((self.gen_spline(CPs, 0.01), CPs, RED))
+        self.curves.append((self.gen_spline(CPs, 100), CPs, RED))
         self.need_draw = True
 
     def reset(self):
-        self.random_CPs(5)
+        self.random_CPs(8)
         self.need_draw = True
 
-    def gen_spline(self, points, step=0.01):
+    def gen_spline(self, points, step=1000):
         if len(points) < 4:
             return []
         
@@ -137,7 +137,7 @@ class draw_spline:
 
         # Compute the Spline Interpolation
         tck, u = splprep(control_points.T, s=0)
-        u_new = np.linspace(0, 1, 1000)
+        u_new = np.linspace(0, 1, step)
         interpolated_points = np.array(splev(u_new, tck)).T
         for point in interpolated_points:
             result.append(point.astype(int))
