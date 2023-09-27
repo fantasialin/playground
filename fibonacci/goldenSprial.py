@@ -63,7 +63,8 @@ class draw_goldenSprial:
         x = radius * np.cos(theta)
         y = radius * np.sin(theta)
 
-        fig, ax = plt.subplots()
+        # DPI = 100 pixels
+        fig, ax = plt.subplots(1, 1, figsize=(5, 5))
         
         # draw golden sprial
         ax.plot(x, y)
@@ -106,9 +107,9 @@ def main():
     surface.fill(WHITE)
     fpsClock = pygame.time.Clock()
 
-    offset = (screen_width - 640)/2
+    offset = (screen_width - 500)/2
 
-    aSprial = draw_goldenSprial(surface, screen_width, screen_height, 640, 480,
+    aSprial = draw_goldenSprial(surface, screen_width, screen_height, 500, 500,
                                 x_offset=offset, y_offset=20, init_random_count=10, draw_single_color=True)
 
     # loop
